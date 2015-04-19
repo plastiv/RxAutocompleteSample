@@ -1,19 +1,21 @@
-package com.github.plastiv.rxautocompletesample.viewmodel;
+package com.github.plastiv.rxautocompletesample.view.model;
 
 import com.github.plastiv.rxautocompletesample.model.Address;
 
 public class AddressListItem {
     private final String firstLine;
     private final String secondLine;
-    private final int iconRes;
     private final Address address;
 
     // real app would use drawable res annotation for static analyze tools
-    public AddressListItem(String firstLine, String secondLine, int iconRes, Address address) {
+    public AddressListItem(String firstLine, String secondLine, Address address) {
         this.firstLine = firstLine;
         this.secondLine = secondLine;
-        this.iconRes = iconRes;
         this.address = address;
+    }
+
+    public static AddressListItem from(Address address) {
+        return new AddressListItem(address.getStreetName() + address.getHouseNumber(), address.getCity(), address);
     }
 
     public String getFirstLine() {
@@ -22,10 +24,6 @@ public class AddressListItem {
 
     public String getSecondLine() {
         return secondLine;
-    }
-
-    public int getIconRes() {
-        return iconRes;
     }
 
     public Address getAddress() {

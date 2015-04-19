@@ -1,4 +1,4 @@
-package com.github.plastiv.rxautocompletesample.viewmodel;
+package com.github.plastiv.rxautocompletesample.view.model;
 
 import android.content.Context;
 import android.view.LayoutInflater;

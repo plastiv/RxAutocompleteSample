@@ -1,4 +1,4 @@
-package com.github.plastiv.rxautocompletesample.viewmodel;
+package com.github.plastiv.rxautocompletesample.view.model;
 
 import java.util.Collections;
 import java.util.List;
