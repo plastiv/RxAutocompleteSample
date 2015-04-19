@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Rx Autocomplete Sample</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_search">Search</string>
 </resources>
