@@ -11,8 +11,12 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.github.plastiv.rxautocompletesample.R;
-import com.github.plastiv.rxautocompletesample.domain.Addresses;
+import com.github.plastiv.rxautocompletesample.domain.AddressAutocompleteInteractor;
 import com.github.plastiv.rxautocompletesample.model.Address;
+import com.github.plastiv.rxautocompletesample.storage.ContactStorage;
+import com.github.plastiv.rxautocompletesample.storage.ContactStorages;
+import com.github.plastiv.rxautocompletesample.storage.ProfileStorage;
+import com.github.plastiv.rxautocompletesample.storage.ProfileStorages;
 import com.github.plastiv.rxautocompletesample.view.model.AddressAdapter;
 import com.github.plastiv.rxautocompletesample.view.model.AddressListItem;
 
@@ -30,7 +34,7 @@ public class AddressAutocompleteActivity extends Activity {
     private AddressAdapter addressAdapter;
     private SearchView searchView;
     private CompositeSubscription compositeSubscription;
-    private Addresses addresses;
+    private AddressAutocompleteInteractor autocompleteInteractor;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +47,9 @@ public class AddressAutocompleteActivity extends Activity {
 
     private void injectDependencies() {
         // real app would use real DI like dagger
-        addresses = new Addresses();
+        ProfileStorage profileStorage = ProfileStorages.getInstance();
+        ContactStorage contactStorage = ContactStorages.getInstance();
+        autocompleteInteractor = new AddressAutocompleteInteractor(profileStorage, contactStorage);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,27 +68,27 @@ public class AddressAutocompleteActivity extends Activity {
         // resubscribe onresume
         compositeSubscription = new CompositeSubscription();
         Observable<String> search = SearchViewQueryText.change(searchView);
-        addresses.autocomplete(search)
-                 .map(new Func1<Address, AddressListItem>() {
-                     @Override public AddressListItem call(Address address) {
-                         return AddressListItem.from(address);
-                     }
-                 })
-                 .toList()
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribe(new Subscriber<List<AddressListItem>>() {
-                     @Override public void onCompleted() {
-                         Log.v(TAG, "onCompleted");
-                     }
+        autocompleteInteractor.autocomplete(search)
+                              .map(new Func1<Address, AddressListItem>() {
+                                  @Override public AddressListItem call(Address address) {
+                                      return AddressListItem.from(address);
+                                  }
+                              })
+                              .toList()
+                              .observeOn(AndroidSchedulers.mainThread())
+                              .subscribe(new Subscriber<List<AddressListItem>>() {
+                                  @Override public void onCompleted() {
+                                      Log.v(TAG, "onCompleted");
+                                  }
 
-                     @Override public void onError(Throwable e) {
-                         Log.e(TAG, "onError", e);
-                     }
+                                  @Override public void onError(Throwable e) {
+                                      Log.e(TAG, "onError", e);
+                                  }
 
-                     @Override public void onNext(List<AddressListItem> addressListItems) {
-                         addressAdapter.setList(addressListItems);
-                     }
-                 });
+                                  @Override public void onNext(List<AddressListItem> addressListItems) {
+                                      addressAdapter.setList(addressListItems);
+                                  }
+                              });
     }
 
     @Override protected void onPause() {

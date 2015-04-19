@@ -2,8 +2,8 @@ package com.github.plastiv.rxautocompletesample.model;
 
 /**
  * Simple POJO for the Sample purpose. Real world app would have hashCode, equals, toString and builder implemented with
- * some codegeneration tool, like AutoValue. And Object Mapper to deal with json/xml/proto serialization to
- * communicate with server api.
+ * some codegeneration tool, like AutoValue. And Object Mapper to deal with json/xml/proto serialization to communicate
+ * with server api.
  */
 public class Address {
     private final String streetName;
@@ -51,6 +51,10 @@ public class Address {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public boolean contains(String query) {
+        return streetName.contains(query) || city.contains(query) || country.contains(query);
     }
 
     public static class Builder {
