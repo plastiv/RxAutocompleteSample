@@ -58,7 +58,7 @@ public class Address {
     }
 
     public static class Builder {
-        private final String streetName;
+        private String streetName;
         private String houseNumber;
         private String postalCode;
         private String city;
@@ -66,8 +66,12 @@ public class Address {
         private double latitude;
         private double longitude;
 
-        public Builder(String streetName) {
+        public Builder() {
+        }
+
+        public Builder streetName(String streetName) {
             this.streetName = streetName;
+            return this;
         }
 
         public Builder houseNumber(String houseNumber) {
