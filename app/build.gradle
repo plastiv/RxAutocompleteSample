@@ -10,7 +10,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
-        // hide google places api key with gradle property. Use your own!
+        // hide google places api key with gradle property
         buildConfigField "String", "GOOGLE_PLACES_API", propertyOrDefault('googleApiKey', '"provideyourownkey"')
     }
 
@@ -25,7 +25,7 @@ android {
 dependencies {
     // main RxJava dependency
     compile "io.reactivex:rxjava:1.0.9"
-    // android RxJava extension to have MainThreadScheduler, TextWatcher Observable
+    // android RxJava extension
     compile "io.reactivex:rxandroid:0.24.0"
     // retrofit dependencies to connect with google places api
     compile "com.squareup.retrofit:retrofit:1.9.0"
