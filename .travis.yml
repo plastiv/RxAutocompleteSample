@@ -6,6 +6,9 @@ android:
     - build-tools-22.0.1
     - android-22
 
+before_install:
+ - chmod +x gradlew
+ 
 script:
     - ./gradlew clean assemble test
 
