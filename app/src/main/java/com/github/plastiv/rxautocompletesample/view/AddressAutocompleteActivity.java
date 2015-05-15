@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.github.plastiv.rxautocompletesample.R;
-import com.github.plastiv.rxautocompletesample.domain.AddressAutocompleteInteractor;
+import com.github.plastiv.rxautocompletesample.domain.AddressAutocomplete;
 import com.github.plastiv.rxautocompletesample.googleplaces.GooglePlacesConnector;
 import com.github.plastiv.rxautocompletesample.googleplaces.GooglePlacesConnectors;
 import com.github.plastiv.rxautocompletesample.model.Address;
@@ -22,11 +22,11 @@ import com.github.plastiv.rxautocompletesample.storage.ProfileStorages;
 import com.github.plastiv.rxautocompletesample.view.model.AddressAdapter;
 import com.github.plastiv.rxautocompletesample.view.model.AddressListItem;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 public class AddressAutocompleteActivity extends Activity {
@@ -36,8 +36,7 @@ public class AddressAutocompleteActivity extends Activity {
     private ListView addressListView;
     private AddressAdapter addressAdapter;
     private CompositeSubscription compositeSubscription;
-    private AddressAutocompleteInteractor autocompleteInteractor;
-    private PublishSubject<String> search;
+    private AddressAutocomplete autocompleteInteractor;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +44,6 @@ public class AddressAutocompleteActivity extends Activity {
         addressListView = (ListView) findViewById(R.id.addressListView);
         addressAdapter = new AddressAdapter(this);
         addressListView.setAdapter(addressAdapter);
-        search = PublishSubject.create();
         injectDependencies();
     }
 
@@ -54,7 +52,7 @@ public class AddressAutocompleteActivity extends Activity {
         ProfileStorage profileStorage = ProfileStorages.getInstance();
         ContactStorage contactStorage = ContactStorages.getInstance();
         GooglePlacesConnector placesConnector = GooglePlacesConnectors.getInstance();
-        autocompleteInteractor = new AddressAutocompleteInteractor(profileStorage, contactStorage, placesConnector);
+        autocompleteInteractor = new AddressAutocomplete(profileStorage, contactStorage, placesConnector);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,12 +64,12 @@ public class AddressAutocompleteActivity extends Activity {
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) {
-                search.onNext(query);
+                autocompleteInteractor.onQueryChange(query);
                 return true;
             }
 
             @Override public boolean onQueryTextChange(String newText) {
-                search.onNext(newText);
+                autocompleteInteractor.onQueryChange(newText);
                 return true;
             }
         });
@@ -83,7 +81,12 @@ public class AddressAutocompleteActivity extends Activity {
         super.onResume();
         // resubscribe onresume
         Subscription autocompleteSub = autocompleteInteractor
-                .autocomplete(search)
+                .asObservable()
+                .flatMap(new Func1<List<Address>, Observable<Address>>() {
+                    @Override public Observable<Address> call(List<Address> addresses) {
+                        return Observable.from(addresses);
+                    }
+                })
                 .map(new Func1<Address, AddressListItem>() {
                     @Override public AddressListItem call(Address address) {
                         return AddressListItem.from(address);

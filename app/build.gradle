@@ -20,6 +20,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions {
+        // provide TextUtils implementation
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -30,6 +35,10 @@ dependencies {
     // retrofit dependencies to connect with google places api
     compile "com.squareup.retrofit:retrofit:1.9.0"
     compile "com.squareup.okhttp:okhttp:2.3.0"
+
+    testCompile "junit:junit:4.12"
+    testCompile "org.mockito:mockito-core:1.9.5"
+    testCompile "com.google.truth:truth:0.25"
 }
 
 // https://gradle.org/docs/current/userguide/tutorial_this_and_that.html#sec:gradle_properties_and_system_properties

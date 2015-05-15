@@ -7,7 +7,6 @@ public class AddressListItem {
     private final String secondLine;
     private final Address address;
 
-    // real app would use drawable res annotation for static analyze tools
     public AddressListItem(String firstLine, String secondLine, Address address) {
         this.firstLine = firstLine;
         this.secondLine = secondLine;

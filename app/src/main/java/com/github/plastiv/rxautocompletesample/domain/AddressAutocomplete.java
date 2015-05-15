@@ -21,28 +21,40 @@ import com.github.plastiv.rxautocompletesample.storage.ProfileStorage;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
-public class AddressAutocompleteInteractor {
+public class AddressAutocomplete {
 
     private final ProfileStorage profileStorage;
     private final ContactStorage contactStorage;
     private final GooglePlacesConnector googlePlacesConnector;
+    private final PublishSubject<String> searchQuery;
 
-    public AddressAutocompleteInteractor(ProfileStorage profileStorage, ContactStorage contactStorage,
-                                         GooglePlacesConnector googlePlacesConnector) {
+    public AddressAutocomplete(ProfileStorage profileStorage,
+                               ContactStorage contactStorage,
+                               GooglePlacesConnector googlePlacesConnector) {
         this.profileStorage = profileStorage;
         this.contactStorage = contactStorage;
         this.googlePlacesConnector = googlePlacesConnector;
+        searchQuery = PublishSubject.create();
     }
 
-    public Observable<Address> autocomplete(Observable<String> search) {
-        return search
-                .debounce(500, TimeUnit.MILLISECONDS)
-                .switchMap(new Func1<String, Observable<? extends Address>>() {
-                    @Override public Observable<? extends Address> call(String s) {
-                        return Observable.merge(contactAddress(s), profileAddress(s), googleAddress(s));
-                    }
-                });
+    public Observable<List<Address>> asObservable() {
+        return searchQuery.asObservable()
+                          .debounce(500, TimeUnit.MILLISECONDS)
+                          .switchMap(new Func1<String, Observable<List<Address>>>() {
+                              @Override public Observable<List<Address>> call(String s) {
+                                  return Observable.merge(contactAddress(s),
+                                                          profileAddress(s),
+                                                          googleAddress(s))
+                                                   .toList();
+                              }
+                          });
+    }
+
+    public void onQueryChange(String query) {
+        searchQuery.onNext(query);
     }
 
     public Observable<Address> contactAddress(final String search) {
