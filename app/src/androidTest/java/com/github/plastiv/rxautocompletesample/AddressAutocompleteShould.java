@@ -92,6 +92,9 @@ public class AddressAutocompleteShould {
         onView(withId(R.id.action_search))
                 .perform(typeText("Khar"), pressKey(KeyEvent.KEYCODE_ENTER));
 
+        // wait for debounce.  TODO: proper Espresso Indle resource
+        Thread.sleep(1 * 1000);
+
         onData(anything())
                 .inAdapterView(withId(R.id.addressListView))
                 .atPosition(0)
