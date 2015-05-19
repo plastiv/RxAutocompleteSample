@@ -10,6 +10,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // hide google places api key with gradle property
         buildConfigField "String", "GOOGLE_PLACES_API", propertyOrDefault('googleApiKey', '"provideyourownkey"')
     }
@@ -21,6 +22,10 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+
     testOptions {
         // provide TextUtils implementation
         unitTests.returnDefaultValues = true
@@ -29,16 +34,26 @@ android {
 
 dependencies {
     // main RxJava dependency
-    compile "io.reactivex:rxjava:1.0.9"
+    compile "io.reactivex:rxjava:1.0.10"
     // android RxJava extension
     compile "io.reactivex:rxandroid:0.24.0"
     // retrofit dependencies to connect with google places api
     compile "com.squareup.retrofit:retrofit:1.9.0"
     compile "com.squareup.okhttp:okhttp:2.3.0"
 
+    // unit test dependencies
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:1.9.5"
     testCompile "com.google.truth:truth:0.25"
+
+    // ui test dependencies
+    androidTestCompile "com.android.support.test:runner:0.2"
+    androidTestCompile "com.android.support.test:rules:0.2"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:2.1"
+    // mockito
+    androidTestCompile 'org.mockito:mockito-core:1.9.5'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2' // required by Mockito
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2' // required by Mockito
 }
 
 // https://gradle.org/docs/current/userguide/tutorial_this_and_that.html#sec:gradle_properties_and_system_properties

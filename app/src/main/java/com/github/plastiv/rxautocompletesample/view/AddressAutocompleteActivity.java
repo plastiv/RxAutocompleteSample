@@ -10,15 +10,13 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.github.plastiv.rxautocompletesample.AutocompleteSampleApplication;
 import com.github.plastiv.rxautocompletesample.R;
 import com.github.plastiv.rxautocompletesample.domain.AddressAutocomplete;
 import com.github.plastiv.rxautocompletesample.googleplaces.GooglePlacesConnector;
-import com.github.plastiv.rxautocompletesample.googleplaces.GooglePlacesConnectors;
 import com.github.plastiv.rxautocompletesample.model.Address;
 import com.github.plastiv.rxautocompletesample.storage.ContactStorage;
-import com.github.plastiv.rxautocompletesample.storage.ContactStorages;
 import com.github.plastiv.rxautocompletesample.storage.ProfileStorage;
-import com.github.plastiv.rxautocompletesample.storage.ProfileStorages;
 import com.github.plastiv.rxautocompletesample.view.model.AddressAdapter;
 import com.github.plastiv.rxautocompletesample.view.model.AddressListItem;
 
@@ -49,9 +47,10 @@ public class AddressAutocompleteActivity extends Activity {
 
     private void injectDependencies() {
         // real app would use real DI like dagger
-        ProfileStorage profileStorage = ProfileStorages.getInstance();
-        ContactStorage contactStorage = ContactStorages.getInstance();
-        GooglePlacesConnector placesConnector = GooglePlacesConnectors.getInstance();
+        AutocompleteSampleApplication app = (AutocompleteSampleApplication) getApplication();
+        ProfileStorage profileStorage = app.getProfileStorage();
+        ContactStorage contactStorage = app.getContactStorage();
+        GooglePlacesConnector placesConnector = app.getGooglePlacesConnector();
         autocompleteInteractor = new AddressAutocomplete(profileStorage, contactStorage, placesConnector);
     }
 
@@ -82,17 +81,17 @@ public class AddressAutocompleteActivity extends Activity {
         // resubscribe onresume
         Subscription autocompleteSub = autocompleteInteractor
                 .asObservable()
-                .flatMap(new Func1<List<Address>, Observable<Address>>() {
-                    @Override public Observable<Address> call(List<Address> addresses) {
-                        return Observable.from(addresses);
+                .flatMap(new Func1<List<Address>, Observable<List<AddressListItem>>>() {
+                    @Override public Observable<List<AddressListItem>> call(List<Address> addresses) {
+                        return Observable.from(addresses)
+                                         .map(new Func1<Address, AddressListItem>() {
+                                             @Override public AddressListItem call(Address address) {
+                                                 return AddressListItem.from(address);
+                                             }
+                                         })
+                                         .toList();
                     }
                 })
-                .map(new Func1<Address, AddressListItem>() {
-                    @Override public AddressListItem call(Address address) {
-                        return AddressListItem.from(address);
-                    }
-                })
-                .toList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<AddressListItem>>() {
                     @Override public void onCompleted() {

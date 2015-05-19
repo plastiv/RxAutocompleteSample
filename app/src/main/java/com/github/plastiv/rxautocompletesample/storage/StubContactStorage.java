@@ -7,7 +7,7 @@ import com.github.plastiv.rxautocompletesample.model.Contact;
 
 import rx.Observable;
 
-class StubContactStorage implements ContactStorage {
+public class StubContactStorage implements ContactStorage {
 
     @Override public Observable<Contact> getAll() {
         return Observable.empty();
