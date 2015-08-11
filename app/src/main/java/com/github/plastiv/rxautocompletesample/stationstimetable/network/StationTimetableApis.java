@@ -11,17 +11,17 @@ public class StationTimetableApis {
         throw new AssertionError("No instances.");
     }
 
-    public static StationApi getInstance() {
+    public static StationTimetableApi getInstance() {
         return newRetrofitInstance();
     }
 
-    private static StationApi newRetrofitInstance() {
+    private static StationTimetableApi newRetrofitInstance() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(createRequestInterceptor())
                 .setEndpoint(BASE_URL)
                 .build();
 
-        return restAdapter.create(StationApi.class);
+        return restAdapter.create(StationTimetableApi.class);
     }
 
     private static RequestInterceptor createRequestInterceptor() {
@@ -29,7 +29,7 @@ public class StationTimetableApis {
             @Override
             public void intercept(RequestFacade request) {
                 // same key required for every api call
-                request.addQueryParam("X-Api-Authentication", "DEV_TEST_TOKEN_STAGING");
+                request.addHeader("X-Api-Authentication", "DEV_TEST_TOKEN_STAGING");
             }
         };
     }

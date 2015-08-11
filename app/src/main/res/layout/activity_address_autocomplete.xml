@@ -10,7 +10,7 @@
     tools:context=".AddressAutocompleteActivity">
 
     <ListView
-        android:id="@+id/stationListView"
+        android:id="@+id/addressListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:listitem="@layout/address_list_item"/>
