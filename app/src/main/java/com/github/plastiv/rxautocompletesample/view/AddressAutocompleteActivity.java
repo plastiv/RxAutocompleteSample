@@ -38,11 +38,11 @@ public class AddressAutocompleteActivity extends Activity {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_address_autocomplete);
-        addressListView = (ListView) findViewById(R.id.addressListView);
-        addressAdapter = new AddressAdapter(this);
-        addressListView.setAdapter(addressAdapter);
-        injectDependencies();
+//        setContentView(R.layout.activity_address_autocomplete);
+//        addressListView = (ListView) findViewById(R.id.addressListView);
+//        addressAdapter = new AddressAdapter(this);
+//        addressListView.setAdapter(addressAdapter);
+//        injectDependencies();
     }
 
     private void injectDependencies() {
