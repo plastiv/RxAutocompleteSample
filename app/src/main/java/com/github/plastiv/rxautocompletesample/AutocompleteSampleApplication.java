@@ -4,10 +4,17 @@ import android.app.Application;
 
 import com.github.plastiv.rxautocompletesample.googleplaces.GooglePlacesConnector;
 import com.github.plastiv.rxautocompletesample.googleplaces.GooglePlacesConnectors;
+import com.github.plastiv.rxautocompletesample.stationstimetable.network.StationTimetableApi;
+import com.github.plastiv.rxautocompletesample.stationstimetable.network.StationTimetableApis;
+import com.github.plastiv.rxautocompletesample.stationstimetable.network.model.StationTimetableResponse;
 import com.github.plastiv.rxautocompletesample.storage.ContactStorage;
 import com.github.plastiv.rxautocompletesample.storage.ProfileStorage;
 import com.github.plastiv.rxautocompletesample.storage.StubContactStorage;
 import com.github.plastiv.rxautocompletesample.storage.StubProfileStorage;
+
+import rx.Observable;
+
+import static junit.framework.Assert.assertTrue;
 
 public class AutocompleteSampleApplication extends Application {
     private GooglePlacesConnector googlePlacesConnector;

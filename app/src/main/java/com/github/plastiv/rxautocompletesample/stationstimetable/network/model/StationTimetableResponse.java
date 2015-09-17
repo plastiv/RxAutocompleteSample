@@ -5,6 +5,9 @@ import retrofit.http.Query;
 import rx.Observable;
 
 public class StationTimetableResponse {
-    StationTimetable timetable;
+    private StationTimetable timetable;
 
+    public StationTimetable getTimetable() {
+        return timetable;
+    }
 }
