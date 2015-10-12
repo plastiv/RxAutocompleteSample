@@ -3,6 +3,8 @@
 buildscript {
     repositories {
         jcenter()
+        // jitpack is required until JakeWharton publishes sdk-manager plugin
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.3.1'
